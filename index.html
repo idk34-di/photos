@@ -12,6 +12,9 @@
 const NOME_SITO = "idk-34";
 const TITOLO_PAGINA = "Photos";
 
+/* E-mail mostrata nella pagina Contatti (lasciala vuota per non mostrarla) */
+const CONTATTI_EMAIL = "";
+
 /* Testo della pagina "Chi sono" */
 const CHI_SONO = "";
 
@@ -23,18 +26,23 @@ const FOTO_DEFAULT = {
   data: ""
 };
 
-/* Elenco delle foto: aggiungi solo il nome del file (devono stare nella cartella foto/) */
+/* Elenco delle foto (devono stare nella cartella foto/).
+   Scrivi il nome del file, poi uno spazio e una t se la foto deve comparire
+   nella schermata "Foto". Senza t si vede solo in Luoghi -> città.
+   Esempi:  "IMG_7299.jpg t"  (si vede in Foto e in Luoghi)
+            "IMG_7301.jpg"    (si vede solo in Luoghi)                    */
 const FOTO_FILE = [
-  "IMG_7299.jpg","IMG_7301.jpg","IMG_7302.jpg","IMG_7305.jpg","IMG_7307.jpg",
-  "IMG_7309.JPG","IMG_7310.jpg","IMG_7313.JPG","IMG_7316.jpg","IMG_7585.jpg",
-  "IMG_7588.JPG","IMG_7589.jpg","IMG_7592.jpg","IMG_7594.JPG","IMG_7595.jpg",
-  "IMG_7597.jpg","IMG_7602.jpg","IMG_7603.JPG","IMG_7604.jpg","IMG_7606.JPG",
-  "IMG_7608.jpg","IMG_7609.JPG","IMG_7610.jpg","IMG_7611.JPG","IMG_7613.JPG",
-  "IMG_7615.jpg","IMG_7618.jpg","IMG_7620.jpg","IMG_7621.jpg","IMG_7690.jpg"
+  "IMG_7299.jpg t","IMG_7301.jpg t","IMG_7302.jpg t","IMG_7305.jpg t","IMG_7307.jpg t",
+  "IMG_7309.JPG t","IMG_7310.jpg t","IMG_7313.JPG t","IMG_7316.jpg t","IMG_7585.jpg t",
+  "IMG_7588.JPG t","IMG_7589.jpg t","IMG_7592.jpg t","IMG_7594.JPG t","IMG_7595.jpg t",
+  "IMG_7597.jpg t","IMG_7602.jpg t","IMG_7603.JPG t","IMG_7604.jpg t","IMG_7606.JPG t",
+  "IMG_7608.jpg t","IMG_7609.JPG t","IMG_7610.jpg t","IMG_7611.JPG t","IMG_7613.JPG t",
+  "IMG_7615.jpg t","IMG_7618.jpg t","IMG_7620.jpg t","IMG_7621.jpg t","IMG_7690.jpg t"
 ];
 
 /* Solo per le foto diverse dal default (opzionale). Esempio:
-   "IMG_7299.jpg": {titolo:"Tramonto", luogo:"Roma", data:"2026-05-12", focale:"50mm", apertura:"f/8", tempo:"1/250", iso:"100"} */
+   "IMG_7299.jpg": {titolo:"Tramonto", luogo:"Roma", data:"2026-05-12", focale:"50mm", apertura:"f/8", tempo:"1/250", iso:"100"}
+   (scrivi il nome del file senza la t) */
 const FOTO_EXTRA = {
 };
 
@@ -87,6 +95,7 @@ h2{font-weight:600;margin-bottom:18px}
 .msg textarea:focus{outline:none;border-color:#111}
 .msg .invia{position:absolute;right:10px;bottom:14px;width:38px;height:38px;border-radius:50%;border:0;background:#111;color:#fff;font-size:20px;cursor:pointer;line-height:1}
 .msg .invia:disabled{background:#bbb;cursor:default}
+.mailpag{margin-top:18px}
 #lightbox{display:none;position:fixed;inset:0;background:#fff;z-index:40;overflow:auto;padding:16px}
 #lightbox.open{display:block}
 #lightbox img{max-width:100%;max-height:75vh;display:block;margin:0 auto}
@@ -126,11 +135,17 @@ h2{font-weight:600;margin-bottom:18px}
 document.title = TITOLO_PAGINA;
 document.getElementById("nomeSito").textContent = NOME_SITO;
 
-const FOTO = FOTO_FILE.map(nome => ({
-  src: "foto/" + nome,
-  ...FOTO_DEFAULT,
-  ...(FOTO_EXTRA[nome] || {})
-}));
+const FOTO = FOTO_FILE.map(riga => {
+  const parti = riga.trim().split(/\s+/);
+  const nome = parti[0];
+  const home = parti.slice(1).some(p => p.toLowerCase() === "t");
+  return {
+    src: "foto/" + nome,
+    home,
+    ...FOTO_DEFAULT,
+    ...(FOTO_EXTRA[nome] || {})
+  };
+});
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -220,8 +235,9 @@ auth.onAuthStateChanged(u => {
 function vai(v){
   vistaCorrente = v;
   if(v==="foto"){
-    app.innerHTML = "<h2>Foto</h2>" + griglia(FOTO);
-    attivaClick(FOTO);
+    const lista = FOTO.filter(f => f.home);
+    app.innerHTML = "<h2>Foto</h2>" + griglia(lista);
+    attivaClick(lista);
   }
   else if(v==="attrezzatura"){
     const blocco = (t, arr) => arr.length
@@ -263,7 +279,8 @@ function vai(v){
       <div class="msg">
         <textarea id="testoMsg" maxlength="2000" placeholder="Scrivi qui il tuo messaggio..."></textarea>
         <button class="invia" id="bInvia" aria-label="Invia">➤</button>
-      </div>`;
+      </div>` +
+      (CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "");
     document.getElementById("bInvia").onclick = inviaMessaggio;
   }
   else if(v==="chisono"){
