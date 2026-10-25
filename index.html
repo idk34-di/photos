@@ -15,9 +15,6 @@ const TITOLO_PAGINA = "Photos";
 /* E-mail mostrata nella pagina Contatti (lasciala vuota per non mostrarla) */
 const CONTATTI_EMAIL = "";
 
-/* Testo della pagina "Chi sono" */
-const CHI_SONO = "";
-
 /* ATTREZZATURA: aggiungi tutte le fotocamere e gli obiettivi che vuoi.
    Compaiono nella pagina Attrezzatura. L'ordine conta: il primo è il numero 1,
    il secondo il numero 2, ecc. (servono per scegliere cosa hai usato per ogni foto) */
@@ -32,62 +29,51 @@ const ATTREZZATURA = {
   ]
 };
 
-/* Valori usati per TUTTE le foto (si possono cambiare foto per foto più sotto) */
+/* Valori usati per TUTTE le foto (si possono cambiare foto per foto) */
 const FOTO_DEFAULT = {
-  luogo: "Cagliari",
   camera: 1,        /* numero della fotocamera in ATTREZZATURA */
-  obiettivo: "",    /* lascia vuoto: lo scegli foto per foto */
+  obiettivo: "",
   data: ""
 };
 
-/* Elenco delle foto (devono stare nella cartella foto/).
-   Scrivi il nome del file, poi uno spazio e una t se la foto deve comparire
-   nella schermata "Foto". Senza t si vede solo in Luoghi -> città. */
-const FOTO_FILE = [
-  "IMG_7299.jpg","IMG_7301.jpg","IMG_7302.jpg","IMG_7305.jpg t","IMG_7307.jpg t",
-  "IMG_7309.JPG","IMG_7310.jpg","IMG_7313.JPG t","IMG_7316.jpg t","IMG_7585.jpg t",
-  "IMG_7588.JPG t","IMG_7589.jpg","IMG_7592.jpg","IMG_7594.JPG","IMG_7595.jpg",
-  "IMG_7597.jpg t","IMG_7602.jpg","IMG_7603.JPG t","IMG_7604.jpg","IMG_7606.JPG t",
-  "IMG_7608.jpg","IMG_7609.JPG","IMG_7610.jpg t","IMG_7611.JPG","IMG_7613.JPG",
-  "IMG_7615.jpg","IMG_7618.jpg","IMG_7620.jpg","IMG_7621.jpg","IMG_7690.jpg"
-];
-
-/* SPECIFICHE DI OGNI FOTO: compila solo quello che vuoi mostrare, il resto lascialo vuoto.
-   obiettivo: numero dell'obiettivo in ATTREZZATURA (1, 2, 3...) oppure un testo libero
-   camera:    (facoltativo) numero della fotocamera, se diversa dal default
-   luogo:     (facoltativo) se la foto non è a Cagliari
-   Scrivi il nome del file senza la t. */
-const FOTO_EXTRA = {
-  "IMG_7299.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7301.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7302.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7305.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7307.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7309.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7310.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7313.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7316.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7585.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7588.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7589.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7592.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7594.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7595.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7597.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7602.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7603.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7604.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7606.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7608.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7609.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7610.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7611.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7613.JPG": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7615.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7618.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7620.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7621.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""},
-  "IMG_7690.jpg": {titolo:"", data:"", obiettivo:"", focale:"", apertura:"", tempo:"", iso:""}
+/* LE FOTO (devono stare nella cartella foto/): una riga per foto.
+   luogo:"Cagliari"  = città (serve per la pagina Luoghi)
+   t:1               = foto preferita: compare anche nella schermata Foto
+                       (senza t si vede solo in Luoghi -> città)
+   Nella stessa riga puoi aggiungere, se vuoi:
+   titolo:"", data:"", obiettivo:2, camera:1, focale:"50mm", apertura:"f/8", tempo:"1/250", iso:"100"
+   (obiettivo e camera sono i numeri della lista ATTREZZATURA) */
+const FOTO_LISTA = {
+  "IMG_7299.jpg": {luogo:"Cagliari"},
+  "IMG_7301.jpg": {luogo:"Cagliari"},
+  "IMG_7302.jpg": {luogo:"Cagliari"},
+  "IMG_7305.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7307.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7309.JPG": {luogo:"Cagliari"},
+  "IMG_7310.jpg": {luogo:"Cagliari"},
+  "IMG_7313.JPG": {luogo:"Cagliari", t:1},
+  "IMG_7316.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7585.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7588.JPG": {luogo:"Cagliari", t:1},
+  "IMG_7589.jpg": {luogo:"Cagliari"},
+  "IMG_7592.jpg": {luogo:"Cagliari"},
+  "IMG_7594.JPG": {luogo:"Cagliari"},
+  "IMG_7595.jpg": {luogo:"Cagliari"},
+  "IMG_7597.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7602.jpg": {luogo:"Cagliari"},
+  "IMG_7603.JPG": {luogo:"Cagliari", t:1},
+  "IMG_7604.jpg": {luogo:"Cagliari"},
+  "IMG_7606.JPG": {luogo:"Cagliari", t:1},
+  "IMG_7608.jpg": {luogo:"Cagliari"},
+  "IMG_7609.JPG": {luogo:"Cagliari"},
+  "IMG_7610.jpg": {luogo:"Cagliari", t:1},
+  "IMG_7611.JPG": {luogo:"Cagliari"},
+  "IMG_7613.JPG": {luogo:"Cagliari"},
+  "IMG_7615.jpg": {luogo:"Cagliari"},
+  "IMG_7618.jpg": {luogo:"Cagliari"},
+  "IMG_7620.jpg": {luogo:"Cagliari"},
+  "IMG_7621.jpg": {luogo:"Cagliari"},
+  "IMG_7690.jpg": {luogo:"Cagliari"}
 };
 
 /* Firebase (stessa configurazione degli altri siti) */
@@ -150,7 +136,6 @@ h2{font-weight:600;margin-bottom:18px}
   <a data-v="luoghi">Luoghi</a>
   <a data-v="accedi">Accedi / Registrati</a>
   <a data-v="contatti">Contatti</a>
-  <a data-v="chisono">Chi sono</a>
 </nav>
 <div id="overlay"></div>
 
@@ -174,11 +159,9 @@ function nomeDa(lista, v){
   return v || "";
 }
 
-const FOTO = FOTO_FILE.map(riga => {
-  const parti = riga.trim().split(/\s+/);
-  const nome = parti[0];
-  const home = parti.slice(1).some(p => p.toLowerCase() === "t");
-  const f = { src: "foto/" + nome, home, ...FOTO_DEFAULT, ...(FOTO_EXTRA[nome] || {}) };
+const FOTO = Object.entries(FOTO_LISTA).map(([nome, dati]) => {
+  const f = { src: "foto/" + nome, ...FOTO_DEFAULT, ...dati };
+  f.home = !!dati.t;
   f.camera = nomeDa(ATTREZZATURA.fotocamere, f.camera);
   f.obiettivo = nomeDa(ATTREZZATURA.obiettivi, f.obiettivo);
   return f;
@@ -319,9 +302,6 @@ function vai(v){
       </div>` +
       (CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "");
     document.getElementById("bInvia").onclick = inviaMessaggio;
-  }
-  else if(v==="chisono"){
-    app.innerHTML = `<h2>Chi sono</h2><p>${CHI_SONO}</p>`;
   }
   window.scrollTo(0,0);
 }
