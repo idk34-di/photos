@@ -15,34 +15,23 @@ const TITOLO_PAGINA = "Photos";
 /* E-mail mostrata nella pagina Contatti (lasciala vuota per non mostrarla) */
 const CONTATTI_EMAIL = "";
 
-/* ATTREZZATURA: aggiungi tutte le fotocamere e gli obiettivi che vuoi.
-   Compaiono nella pagina Attrezzatura. L'ordine conta: il primo è il numero 1,
-   il secondo il numero 2, ecc. (servono per scegliere cosa hai usato per ogni foto) */
+/* Pagina "Attrezzatura": aggiungi tutte le fotocamere e gli obiettivi che vuoi */
 const ATTREZZATURA = {
   fotocamere: [
-    {nome:"Praktica MTL 5B", note:""}                                        // 1
+    {nome:"Praktica MTL 5B", note:""}
   ],
   obiettivi: [
-    {nome:"Petri C.C Auto 55mm f/1.8", note:""},                             // 1
-    {nome:"Pentacon auto Multi Coating 50mm f/1.8", note:""},                // 2
-    {nome:"MIR-1B (МИР-1В) 37mm f/2.8", note:""}                             // 3
+    {nome:"Petri C.C Auto 55mm f/1.8", note:""},
+    {nome:"Pentacon auto Multi Coating 50mm f/1.8", note:""},
+    {nome:"MIR-1B (МИР-1В) 37mm f/2.8", note:""}
   ]
 };
 
-/* Valori usati per TUTTE le foto (si possono cambiare foto per foto) */
-const FOTO_DEFAULT = {
-  camera: 1,        /* numero della fotocamera in ATTREZZATURA */
-  obiettivo: "",
-  data: ""
-};
-
 /* LE FOTO (devono stare nella cartella foto/): una riga per foto.
-   luogo:"Cagliari"  = città (serve per la pagina Luoghi)
+   luogo:"Cagliari"  = città (serve per la pagina Luoghi, ed è l'unica cosa
+                       che compare quando clicchi la foto)
    t:1               = foto preferita: compare anche nella schermata Foto
-                       (senza t si vede solo in Luoghi -> città)
-   Nella stessa riga puoi aggiungere, se vuoi:
-   titolo:"", data:"", obiettivo:2, camera:1, focale:"50mm", apertura:"f/8", tempo:"1/250", iso:"100"
-   (obiettivo e camera sono i numeri della lista ATTREZZATURA) */
+                       (senza t si vede solo in Luoghi -> città) */
 const FOTO_LISTA = {
   "IMG_7299.jpg": {luogo:"Cagliari"},
   "IMG_7301.jpg": {luogo:"Cagliari"},
@@ -154,18 +143,11 @@ h2{font-weight:600;margin-bottom:18px}
 document.title = TITOLO_PAGINA;
 document.getElementById("nomeSito").textContent = NOME_SITO;
 
-function nomeDa(lista, v){
-  if(typeof v === "number") return lista[v-1] ? lista[v-1].nome : "";
-  return v || "";
-}
-
-const FOTO = Object.entries(FOTO_LISTA).map(([nome, dati]) => {
-  const f = { src: "foto/" + nome, ...FOTO_DEFAULT, ...dati };
-  f.home = !!dati.t;
-  f.camera = nomeDa(ATTREZZATURA.fotocamere, f.camera);
-  f.obiettivo = nomeDa(ATTREZZATURA.obiettivi, f.obiettivo);
-  return f;
-});
+const FOTO = Object.entries(FOTO_LISTA).map(([nome, dati]) => ({
+  src: "foto/" + nome,
+  luogo: dati.luogo || "",
+  home: !!dati.t
+}));
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -189,7 +171,7 @@ menu.querySelectorAll("a").forEach(a => a.onclick = () => { vai(a.dataset.v); to
 function griglia(lista){
   if(!lista.length) return '<p class="vuoto">Nessuna foto ancora.</p>';
   return '<div class="grid">' + lista.map(f =>
-    `<img loading="lazy" src="${f.src}" alt="${f.titolo||""}" data-src="${f.src}">`).join("") + '</div>';
+    `<img loading="lazy" src="${f.src}" alt="" data-src="${f.src}">`).join("") + '</div>';
 }
 function attivaClick(lista){
   app.querySelectorAll(".grid img").forEach(img => {
@@ -198,13 +180,7 @@ function attivaClick(lista){
 }
 function apriFoto(f){
   document.getElementById("lbImg").src = f.src;
-  const righe = [];
-  if(f.titolo) righe.push(`<h3>${f.titolo}</h3>`);
-  if(f.luogo || f.data) righe.push(`<p>📍 ${f.luogo||""}${f.luogo&&f.data?" · ":""}${f.data||""}</p>`);
-  const tech = [f.camera, f.obiettivo].filter(Boolean).join(" · ");
-  const exp = [f.focale, f.apertura, f.tempo, f.iso ? "ISO "+f.iso : ""].filter(Boolean).join(" · ");
-  if(tech || exp) righe.push(`<p>📷 ${tech}${tech&&exp?"<br>":""}${exp}</p>`);
-  document.getElementById("lbInfo").innerHTML = righe.join("");
+  document.getElementById("lbInfo").innerHTML = f.luogo ? `<p>📍 ${f.luogo}</p>` : "";
   document.getElementById("lightbox").classList.add("open");
 }
 document.getElementById("chiudi").onclick = () =>
