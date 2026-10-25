@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>prova</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,sans-serif;background:#fff;color:#111;line-height:1.5}
+header{position:sticky;top:0;background:#fff;display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #eee;z-index:10}
+header h1{font-size:20px;font-weight:600;letter-spacing:.5px}
+#burger{font-size:26px;background:none;border:0;cursor:pointer;line-height:1}
+#menu{position:fixed;top:0;left:-260px;width:260px;height:100%;background:#fff;border-right:1px solid #eee;padding:70px 0 20px;transition:left .25s;z-index:30}
+#menu.open{left:0}
+#menu a{display:block;padding:14px 24px;color:#111;text-decoration:none;cursor:pointer}
+#menu a:hover{background:#f5f5f5}
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:20}
+#overlay.open{display:block}
+main{max-width:1100px;margin:0 auto;padding:24px 16px}
+h2{font-weight:600;margin-bottom:18px}
+.vuoto{color:#777}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;cursor:pointer;display:block;background:#f2f2f2}
+.luoghi{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.luoghi button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:20px;cursor:pointer;font-size:15px}
+.luoghi button.on{background:#111;color:#fff;border-color:#111}
+.card{border:1px solid #eee;padding:16px;margin-bottom:12px;border-radius:8px}
+.card b{display:block}
+.btn{padding:12px 18px;font-size:16px;border:1px solid #111;border-radius:6px;background:#111;color:#fff;cursor:pointer}
+.btn.chiaro{background:#fff;color:#111}
+#lightbox{display:none;position:fixed;inset:0;background:#fff;z-index:40;overflow:auto;padding:16px}
+#lightbox.open{display:block}
+#lightbox img{max-width:100%;max-height:75vh;display:block;margin:0 auto}
+#lightbox .info{max-width:700px;margin:14px auto;font-size:14px;color:#444}
+#chiudi{position:fixed;top:10px;right:16px;font-size:32px;background:none;border:0;cursor:pointer}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="burger" aria-label="Menu">☰</button>
+  <h1>prova</h1>
+</header>
+
+<nav id="menu">
+  <a data-v="foto">Foto</a>
+  <a data-v="attrezzatura">Attrezzatura</a>
+  <a data-v="luoghi">Luoghi</a>
+  <a data-v="accedi">Accedi / Registrati</a>
+  <a data-v="contatti">Contatti</a>
+  <a data-v="chisono">Chi sono</a>
+</nav>
+<div id="overlay"></div>
+
+<main id="app"></main>
+
+<div id="lightbox">
+  <button id="chiudi">×</button>
+  <img id="lbImg" alt="">
+  <div class="info" id="lbInfo"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ====== I TUOI DATI: modifica solo qui ====== */
+
+const FOTO = [
+  {src:"foto/IMG_7299.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7301.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7302.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7305.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7307.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7309.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7310.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7313.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7316.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7585.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7588.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7589.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7592.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7594.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7595.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7597.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7602.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7603.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7604.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7606.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7608.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7609.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7610.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7611.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7613.JPG", luogo:"Cagliari"},
+  {src:"foto/IMG_7615.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7618.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7620.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7621.jpg", luogo:"Cagliari"},
+  {src:"foto/IMG_7690.jpg", luogo:"Cagliari"}
+];
+
+const ATTREZZATURA = {
+  fotocamere: [
+    // {nome:"La tua fotocamera", note:"Descrizione"},
+  ],
+  obiettivi: [
+    // {nome:"Obiettivo", note:"Descrizione"},
+  ]
+};
+
+const CONTATTI_EMAIL = "";
+const CHI_SONO = "";
+
+/* Copia apiKey e appId dalla config Firebase che usi già negli altri siti */
+const firebaseConfig = {
+  apiKey: "INCOLLA_QUI",
+  authDomain: "workspace-5e87a.firebaseapp.com",
+  projectId: "workspace-5e87a",
+  appId: "INCOLLA_QUI"
+};
+/* ============================================ */
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+let utente = null;
+
+const app = document.getElementById("app");
+const menu = document.getElementById("menu");
+const overlay = document.getElementById("overlay");
+let luogoSel = null;
+let vistaCorrente = "foto";
+
+function toggleMenu(open){
+  menu.classList.toggle("open", open);
+  overlay.classList.toggle("open", open);
+}
+document.getElementById("burger").onclick = () => toggleMenu(!menu.classList.contains("open"));
+overlay.onclick = () => toggleMenu(false);
+menu.querySelectorAll("a").forEach(a => a.onclick = () => { vai(a.dataset.v); toggleMenu(false); });
+
+function griglia(lista){
+  if(!lista.length) return '<p class="vuoto">Nessuna foto ancora.</p>';
+  return '<div class="grid">' + lista.map(f =>
+    `<img loading="lazy" src="${f.src}" alt="${f.titolo||""}" data-src="${f.src}">`).join("") + '</div>';
+}
+function attivaClick(lista){
+  app.querySelectorAll(".grid img").forEach(img => {
+    img.onclick = () => apriFoto(lista.find(f => f.src === img.dataset.src));
+  });
+}
+function apriFoto(f){
+  document.getElementById("lbImg").src = f.src;
+  const righe = [];
+  if(f.titolo) righe.push(`<h3>${f.titolo}</h3>`);
+  if(f.luogo || f.data) righe.push(`<p>📍 ${f.luogo||""}${f.luogo&&f.data?" · ":""}${f.data||""}</p>`);
+  const tech = [f.camera, f.obiettivo].filter(Boolean).join(" · ");
+  const exp = [f.focale, f.apertura, f.tempo, f.iso ? "ISO "+f.iso : ""].filter(Boolean).join(" · ");
+  if(tech || exp) righe.push(`<p>📷 ${tech}${tech&&exp?"<br>":""}${exp}</p>`);
+  document.getElementById("lbInfo").innerHTML = righe.join("");
+  document.getElementById("lightbox").classList.add("open");
+}
+document.getElementById("chiudi").onclick = () =>
+  document.getElementById("lightbox").classList.remove("open");
+
+function accedi(){
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert("Accesso non riuscito: " + e.message));
+}
+function esci(){ auth.signOut(); }
+
+async function iscriviti(){
+  try{
+    await db.collection("iscritti_prova").doc(utente.uid).set({
+      email: utente.email,
+      nome: utente.displayName || "",
+      data: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    alert("Iscrizione completata");
+  }catch(e){ alert("Errore: " + e.message); }
+}
+
+auth.onAuthStateChanged(u => {
+  utente = u;
+  if(vistaCorrente === "accedi") vai("accedi");
+});
+
+function vai(v){
+  vistaCorrente = v;
+  if(v==="foto"){
+    app.innerHTML = "<h2>Foto</h2>" + griglia(FOTO);
+    attivaClick(FOTO);
+  }
+  else if(v==="attrezzatura"){
+    const blocco = (t, arr) => arr.length
+      ? `<h3 style="margin:18px 0 10px">${t}</h3>` + arr.map(x => `<div class="card"><b>${x.nome}</b>${x.note||""}</div>`).join("")
+      : "";
+    const html = blocco("Fotocamere", ATTREZZATURA.fotocamere) + blocco("Obiettivi", ATTREZZATURA.obiettivi);
+    app.innerHTML = "<h2>Attrezzatura</h2>" + (html || '<p class="vuoto">Nulla ancora.</p>');
+  }
+  else if(v==="luoghi"){
+    const luoghi = [...new Set(FOTO.map(f => f.luogo).filter(Boolean))].sort();
+    if(!luoghi.length){ app.innerHTML = '<h2>Luoghi</h2><p class="vuoto">Nessun luogo ancora.</p>'; }
+    else{
+      if(!luogoSel || !luoghi.includes(luogoSel)) luogoSel = luoghi[0];
+      const lista = FOTO.filter(f => f.luogo === luogoSel);
+      app.innerHTML = "<h2>Luoghi</h2><div class='luoghi'>" +
+        luoghi.map(l => `<button class="${l===luogoSel?'on':''}" data-l="${l}">${l}</button>`).join("") +
+        "</div>" + griglia(lista);
+      app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { luogoSel = b.dataset.l; vai("luoghi"); });
+      attivaClick(lista);
+    }
+  }
+  else if(v==="accedi"){
+    if(!utente){
+      app.innerHTML = `<h2>Accedi o registrati</h2>
+        <p style="margin-bottom:16px">Accedi con Google per ricevere un avviso quando carico nuove foto.</p>
+        <button class="btn" id="bAccedi">Accedi con Google</button>`;
+      document.getElementById("bAccedi").onclick = accedi;
+    }else{
+      app.innerHTML = `<h2>Ciao ${utente.displayName||""}</h2>
+        <p style="margin-bottom:16px">${utente.email}</p>
+        <button class="btn" id="bIscr">Ricevi avvisi per nuove foto</button>
+        <button class="btn chiaro" id="bEsci">Esci</button>`;
+      document.getElementById("bIscr").onclick = iscriviti;
+      document.getElementById("bEsci").onclick = esci;
+    }
+  }
+  else if(v==="contatti"){
+    app.innerHTML = `<h2>Contatti</h2>` + (CONTATTI_EMAIL ? `<p><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "");
+  }
+  else if(v==="chisono"){
+    app.innerHTML = `<h2>Chi sono</h2><p>${CHI_SONO}</p>`;
+  }
+  window.scrollTo(0,0);
+}
+vai("foto");
+</script>
+</body>
+</html>
