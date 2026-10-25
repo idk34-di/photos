@@ -3,6 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* ═══════════════════════════════════════════════
+   VALORI DA MODIFICARE (tutto qui, niente altro)
+   ═══════════════════════════════════════════════ */
+
+/* Nome del sito e titolo della scheda del browser */
+const NOME_SITO = "prova";
+const TITOLO_PAGINA = "Photos";
+
+/* Testo della pagina "Chi sono" */
+const CHI_SONO = "";
+
+/* Valori usati per TUTTE le foto (cambia qui, si aggiornano tutte) */
+const FOTO_DEFAULT = {
+  luogo: "Cagliari",
+  camera: "Praktica MTL 5B",
+  obiettivo: "",
+  data: ""
+};
+
+/* Elenco delle foto: aggiungi solo il nome del file (devono stare nella cartella foto/) */
+const FOTO_FILE = [
+  "IMG_7299.jpg","IMG_7301.jpg","IMG_7302.jpg","IMG_7305.jpg","IMG_7307.jpg",
+  "IMG_7309.JPG","IMG_7310.jpg","IMG_7313.JPG","IMG_7316.jpg","IMG_7585.jpg",
+  "IMG_7588.JPG","IMG_7589.jpg","IMG_7592.jpg","IMG_7594.JPG","IMG_7595.jpg",
+  "IMG_7597.jpg","IMG_7602.jpg","IMG_7603.JPG","IMG_7604.jpg","IMG_7606.JPG",
+  "IMG_7608.jpg","IMG_7609.JPG","IMG_7610.jpg","IMG_7611.JPG","IMG_7613.JPG",
+  "IMG_7615.jpg","IMG_7618.jpg","IMG_7620.jpg","IMG_7621.jpg","IMG_7690.jpg"
+];
+
+/* Solo per le foto diverse dal default (opzionale). Esempio:
+   "IMG_7299.jpg": {titolo:"Tramonto", luogo:"Roma", data:"2026-05-12", focale:"50mm", apertura:"f/8", tempo:"1/250", iso:"100"} */
+const FOTO_EXTRA = {
+};
+
+/* Pagina "Attrezzatura" */
+const ATTREZZATURA = {
+  fotocamere: [
+    {nome:"Praktica MTL 5B", note:""}
+  ],
+  obiettivi: [
+    // {nome:"Nome obiettivo", note:"Descrizione"}
+  ]
+};
+
+/* Firebase (stessa configurazione degli altri siti) */
+const firebaseConfig = {
+  apiKey: "AIzaSyA0-O7pTF_M_DmJ2mkvlGqkJuoD5Lc_WjE",
+  authDomain: "workspace-5e87a.firebaseapp.com",
+  projectId: "workspace-5e87a"
+};
+
+/* ═══════════════════ FINE VALORI ═══════════════════ */
+</script>
 <title>Photos</title>
 <style>
 *{box-sizing:border-box;margin:0}
@@ -44,7 +98,7 @@ h2{font-weight:600;margin-bottom:18px}
 
 <header>
   <button id="burger" aria-label="Menu">☰</button>
-  <h1>prova</h1>
+  <h1 id="nomeSito"></h1>
 </header>
 
 <nav id="menu">
@@ -69,58 +123,14 @@ h2{font-weight:600;margin-bottom:18px}
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script>
-/* ====== I TUOI DATI: modifica solo qui ====== */
+document.title = TITOLO_PAGINA;
+document.getElementById("nomeSito").textContent = NOME_SITO;
 
-const FOTO = [
-  {src:"foto/IMG_7299.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7301.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7302.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7305.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7307.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7309.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7310.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7313.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7316.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7585.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7588.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7589.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7592.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7594.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7595.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7597.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7602.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7603.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7604.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7606.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7608.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7609.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7610.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7611.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7613.JPG", luogo:"Cagliari"},
-  {src:"foto/IMG_7615.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7618.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7620.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7621.jpg", luogo:"Cagliari"},
-  {src:"foto/IMG_7690.jpg", luogo:"Cagliari"}
-];
-
-const ATTREZZATURA = {
-  fotocamere: [
-    // {nome:"Praktica mtl 5b", note:"Descrizione"},
-  ],
-  obiettivi: [
-    // {nome:"Obiettivo", note:"Descrizione"},
-  ]
-};
-
-const CHI_SONO = "";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0-O7pTF_M_DmJ2mkvlGqkJuoD5Lc_WjE",
-  authDomain: "workspace-5e87a.firebaseapp.com",
-  projectId: "workspace-5e87a"
-};
-/* ============================================ */
+const FOTO = FOTO_FILE.map(nome => ({
+  src: "foto/" + nome,
+  ...FOTO_DEFAULT,
+  ...(FOTO_EXTRA[nome] || {})
+}));
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
