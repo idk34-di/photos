@@ -123,7 +123,7 @@ h2{font-weight:600;margin-bottom:18px}
   <a data-v="foto">Foto</a>
   <a data-v="attrezzatura">Attrezzatura</a>
   <a data-v="luoghi">Luoghi</a>
-  <a data-v="accedi">Accedi / Registrati</a>
+  <a data-v="accedi">Accedi</a>
   <a data-v="contatti">Contatti</a>
 </nav>
 <div id="overlay"></div>
@@ -191,28 +191,17 @@ function accedi(){
 }
 function esci(){ auth.signOut(); }
 
-async function iscriviti(){
-  try{
-    await db.collection("iscritti_prova").doc(utente.uid).set({
-      email: utente.email,
-      nome: utente.displayName || "",
-      data: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    alert("Iscrizione completata");
-  }catch(e){ alert("Errore: " + e.message); }
-}
-
 async function inviaMessaggio(){
   const area = document.getElementById("testoMsg");
   const btn = document.getElementById("bInvia");
   const testo = area.value.trim();
-  if(!testo) return;
+  if(!testo || !utente) return;
   btn.disabled = true;
   try{
     await db.collection("messaggi_prova").add({
       testo: testo.slice(0, 2000),
-      email: utente ? utente.email : "",
-      nome: utente ? (utente.displayName || "") : "",
+      email: utente.email || "",
+      nome: utente.displayName || "",
       data: firebase.firestore.FieldValue.serverTimestamp()
     });
     area.value = "";
@@ -225,7 +214,7 @@ async function inviaMessaggio(){
 
 auth.onAuthStateChanged(u => {
   utente = u;
-  if(vistaCorrente === "accedi") vai("accedi");
+  if(vistaCorrente === "accedi" || vistaCorrente === "contatti") vai(vistaCorrente);
 });
 
 function vai(v){
@@ -257,27 +246,32 @@ function vai(v){
   }
   else if(v==="accedi"){
     if(!utente){
-      app.innerHTML = `<h2>Accedi o registrati</h2>
-        <p style="margin-bottom:16px">Accedi con Google per ricevere un avviso quando carico nuove foto.</p>
+      app.innerHTML = `<h2>Accedi</h2>
+        <p style="margin-bottom:16px">Accedi con Google per poter scrivermi dalla pagina Contatti.</p>
         <button class="btn" id="bAccedi">Accedi con Google</button>`;
       document.getElementById("bAccedi").onclick = accedi;
     }else{
       app.innerHTML = `<h2>Ciao ${utente.displayName||""}</h2>
-        <p style="margin-bottom:16px">${utente.email}</p>
-        <button class="btn" id="bIscr">Ricevi avvisi per nuove foto</button>
+        <p style="margin-bottom:16px">${utente.email||""}</p>
         <button class="btn chiaro" id="bEsci">Esci</button>`;
-      document.getElementById("bIscr").onclick = iscriviti;
       document.getElementById("bEsci").onclick = esci;
     }
   }
   else if(v==="contatti"){
-    app.innerHTML = `<h2>Contatti</h2>
-      <div class="msg">
-        <textarea id="testoMsg" maxlength="2000" placeholder="Scrivi qui il tuo messaggio..."></textarea>
-        <button class="invia" id="bInvia" aria-label="Invia">➤</button>
-      </div>` +
-      (CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "");
-    document.getElementById("bInvia").onclick = inviaMessaggio;
+    const mail = CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "";
+    if(!utente){
+      app.innerHTML = `<h2>Contatti</h2>
+        <p style="margin-bottom:16px">Per scrivermi devi prima accedere con Google.</p>
+        <button class="btn" id="bAccedi2">Accedi con Google</button>` + mail;
+      document.getElementById("bAccedi2").onclick = accedi;
+    }else{
+      app.innerHTML = `<h2>Contatti</h2>
+        <div class="msg">
+          <textarea id="testoMsg" maxlength="2000" placeholder="Scrivi qui il tuo messaggio..."></textarea>
+          <button class="invia" id="bInvia" aria-label="Invia">➤</button>
+        </div>` + mail;
+      document.getElementById("bInvia").onclick = inviaMessaggio;
+    }
   }
   window.scrollTo(0,0);
 }
