@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>
 /* ═══════════════════════════════════════════════
-   VALORI DA MODIFICARE (tutto qui, niente altro)
+   VALUES TO EDIT (everything is here, nothing else)
    ═══════════════════════════════════════════════ */
 
-/* Nome del sito e titolo della scheda del browser */
+/* Site name and browser tab title */
 const NOME_SITO = "idk-34";
 const TITOLO_PAGINA = "Photos";
 
-/* E-mail mostrata nella pagina Contatti (lasciala vuota per non mostrarla) */
+/* Email shown on the Contact page (leave empty to hide it) */
 const CONTATTI_EMAIL = "";
 
-/* Pagina "Attrezzatura": aggiungi tutte le fotocamere e gli obiettivi che vuoi */
+/* "Equipment" page: add as many cameras and lenses as you like */
 const ATTREZZATURA = {
   fotocamere: [
     {nome:"Praktica MTL 5B", note:""}
@@ -27,11 +27,11 @@ const ATTREZZATURA = {
   ]
 };
 
-/* LE FOTO (devono stare nella cartella foto/): una riga per foto.
-   luogo:"Cagliari"  = città (serve per la pagina Luoghi, ed è l'unica cosa
-                       che compare quando clicchi la foto)
-   t:1               = foto preferita: compare anche nella schermata Foto
-                       (senza t si vede solo in Luoghi -> città) */
+/* THE PHOTOS (they must be in the foto/ folder): one line per photo.
+   luogo:"Cagliari"  = city (used by the Places page, and it's the only
+                       thing shown when you click the photo)
+   t:1               = favorite photo: also shown on the Photos screen
+                       (without t it only appears under Places -> city) */
 const FOTO_LISTA = {
   "IMG_7299.jpg": {luogo:"Cagliari"},
   "IMG_7301.jpg": {luogo:"Cagliari"},
@@ -65,14 +65,14 @@ const FOTO_LISTA = {
   "IMG_7690.jpg": {luogo:"Cagliari"}
 };
 
-/* Firebase (stessa configurazione degli altri siti) */
+/* Firebase (same configuration as the other sites) */
 const firebaseConfig = {
   apiKey: "AIzaSyA0-O7pTF_M_DmJ2mkvlGqkJuoD5Lc_WjE",
   authDomain: "workspace-5e87a.firebaseapp.com",
   projectId: "workspace-5e87a"
 };
 
-/* ═══════════════════ FINE VALORI ═══════════════════ */
+/* ═══════════════════ END OF VALUES ═══════════════════ */
 </script>
 <title>Photos</title>
 <style>
@@ -120,11 +120,11 @@ h2{font-weight:600;margin-bottom:18px}
 </header>
 
 <nav id="menu">
-  <a data-v="foto">Foto</a>
-  <a data-v="attrezzatura">Attrezzatura</a>
-  <a data-v="luoghi">Luoghi</a>
-  <a data-v="accedi">Accedi</a>
-  <a data-v="contatti">Contatti</a>
+  <a data-v="foto">Photos</a>
+  <a data-v="attrezzatura">Equipment</a>
+  <a data-v="luoghi">Places</a>
+  <a data-v="accedi">Sign in</a>
+  <a data-v="contatti">Contact</a>
 </nav>
 <div id="overlay"></div>
 
@@ -169,7 +169,7 @@ overlay.onclick = () => toggleMenu(false);
 menu.querySelectorAll("a").forEach(a => a.onclick = () => { vai(a.dataset.v); toggleMenu(false); });
 
 function griglia(lista){
-  if(!lista.length) return '<p class="vuoto">Nessuna foto ancora.</p>';
+  if(!lista.length) return '<p class="vuoto">No photos yet.</p>';
   return '<div class="grid">' + lista.map(f =>
     `<img loading="lazy" src="${f.src}" alt="" data-src="${f.src}">`).join("") + '</div>';
 }
@@ -187,7 +187,7 @@ document.getElementById("chiudi").onclick = () =>
   document.getElementById("lightbox").classList.remove("open");
 
 function accedi(){
-  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert("Accesso non riuscito: " + e.message));
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert("Sign-in failed: " + e.message));
 }
 function esci(){ auth.signOut(); }
 
@@ -205,9 +205,9 @@ async function inviaMessaggio(){
       data: firebase.firestore.FieldValue.serverTimestamp()
     });
     area.value = "";
-    alert("Messaggio inviato");
+    alert("Message sent");
   }catch(e){
-    alert("Errore: " + e.message);
+    alert("Error: " + e.message);
   }
   btn.disabled = false;
 }
@@ -221,23 +221,23 @@ function vai(v){
   vistaCorrente = v;
   if(v==="foto"){
     const lista = FOTO.filter(f => f.home);
-    app.innerHTML = "<h2>Foto</h2>" + griglia(lista);
+    app.innerHTML = "<h2>Photos</h2>" + griglia(lista);
     attivaClick(lista);
   }
   else if(v==="attrezzatura"){
     const blocco = (t, arr) => arr.length
       ? `<h3 style="margin:18px 0 10px">${t}</h3>` + arr.map(x => `<div class="card"><b>${x.nome}</b>${x.note||""}</div>`).join("")
       : "";
-    const html = blocco("Fotocamere", ATTREZZATURA.fotocamere) + blocco("Obiettivi", ATTREZZATURA.obiettivi);
-    app.innerHTML = "<h2>Attrezzatura</h2>" + (html || '<p class="vuoto">Nulla ancora.</p>');
+    const html = blocco("Cameras", ATTREZZATURA.fotocamere) + blocco("Lenses", ATTREZZATURA.obiettivi);
+    app.innerHTML = "<h2>Equipment</h2>" + (html || '<p class="vuoto">Nothing yet.</p>');
   }
   else if(v==="luoghi"){
     const luoghi = [...new Set(FOTO.map(f => f.luogo).filter(Boolean))].sort();
-    if(!luoghi.length){ app.innerHTML = '<h2>Luoghi</h2><p class="vuoto">Nessun luogo ancora.</p>'; }
+    if(!luoghi.length){ app.innerHTML = '<h2>Places</h2><p class="vuoto">No places yet.</p>'; }
     else{
       if(!luogoSel || !luoghi.includes(luogoSel)) luogoSel = luoghi[0];
       const lista = FOTO.filter(f => f.luogo === luogoSel);
-      app.innerHTML = "<h2>Luoghi</h2><div class='luoghi'>" +
+      app.innerHTML = "<h2>Places</h2><div class='luoghi'>" +
         luoghi.map(l => `<button class="${l===luogoSel?'on':''}" data-l="${l}">${l}</button>`).join("") +
         "</div>" + griglia(lista);
       app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { luogoSel = b.dataset.l; vai("luoghi"); });
@@ -246,29 +246,29 @@ function vai(v){
   }
   else if(v==="accedi"){
     if(!utente){
-      app.innerHTML = `<h2>Accedi</h2>
-        <p style="margin-bottom:16px">Accedi con Google per poter scrivermi dalla pagina Contatti.</p>
-        <button class="btn" id="bAccedi">Accedi con Google</button>`;
+      app.innerHTML = `<h2>Sign in</h2>
+        <p style="margin-bottom:16px">Sign in with Google to be able to write to me from the Contact page.</p>
+        <button class="btn" id="bAccedi">Sign in with Google</button>`;
       document.getElementById("bAccedi").onclick = accedi;
     }else{
-      app.innerHTML = `<h2>Ciao ${utente.displayName||""}</h2>
+      app.innerHTML = `<h2>Hello ${utente.displayName||""}</h2>
         <p style="margin-bottom:16px">${utente.email||""}</p>
-        <button class="btn chiaro" id="bEsci">Esci</button>`;
+        <button class="btn chiaro" id="bEsci">Sign out</button>`;
       document.getElementById("bEsci").onclick = esci;
     }
   }
   else if(v==="contatti"){
     const mail = CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "";
     if(!utente){
-      app.innerHTML = `<h2>Contatti</h2>
-        <p style="margin-bottom:16px">Per scrivermi devi prima accedere con Google.</p>
-        <button class="btn" id="bAccedi2">Accedi con Google</button>` + mail;
+      app.innerHTML = `<h2>Contact</h2>
+        <p style="margin-bottom:16px">To write to me you need to sign in with Google first.</p>
+        <button class="btn" id="bAccedi2">Sign in with Google</button>` + mail;
       document.getElementById("bAccedi2").onclick = accedi;
     }else{
-      app.innerHTML = `<h2>Contatti</h2>
+      app.innerHTML = `<h2>Contact</h2>
         <div class="msg">
-          <textarea id="testoMsg" maxlength="2000" placeholder="Scrivi qui il tuo messaggio..."></textarea>
-          <button class="invia" id="bInvia" aria-label="Invia">➤</button>
+          <textarea id="testoMsg" maxlength="2000" placeholder="Write your message here..."></textarea>
+          <button class="invia" id="bInvia" aria-label="Send">➤</button>
         </div>` + mail;
       document.getElementById("bInvia").onclick = inviaMessaggio;
     }
