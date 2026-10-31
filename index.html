@@ -30,67 +30,69 @@ const ATTREZZATURA = {
 /* LE FOTO (devono stare nella cartella foto/): una riga per foto.
    luogo:"Cagliari"  = città (serve per la pagina Luoghi, ed è l'unica cosa
                        che compare quando clicchi la foto)
+   rullino:2         = numero del rullino (1, 2, 3... senza limiti): nella pagina
+                       Rullino compaiono solo i numeri che esistono
    t:1               = foto preferita: compare anche nella schermata Foto
-                       (senza t si vede solo in Luoghi -> città)
-   ATTENZIONE: la t:1 va DENTRO le graffe, esempio: {luogo:"Cagliari", t:1}, */
+                       (senza t si vede solo in Luoghi e Rullino)
+   ATTENZIONE: tutto va DENTRO le graffe, esempio: {luogo:"Cagliari", rullino:2, t:1}, */
 const FOTO_LISTA = {
-  "IMG_7299.jpg": {luogo:"Cagliari"},
-  "IMG_7301.jpg": {luogo:"Cagliari"},
-  "IMG_7302.jpg": {luogo:"Cagliari"},
-  "IMG_7305.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7307.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7309.JPG": {luogo:"Cagliari"},
-  "IMG_7310.jpg": {luogo:"Cagliari"},
-  "IMG_7313.JPG": {luogo:"Cagliari", t:1},
-  "IMG_7316.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7585.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7588.JPG": {luogo:"Cagliari", t:1},
-  "IMG_7589.jpg": {luogo:"Cagliari"},
-  "IMG_7592.jpg": {luogo:"Cagliari"},
-  "IMG_7594.JPG": {luogo:"Cagliari"},
-  "IMG_7595.jpg": {luogo:"Cagliari"},
-  "IMG_7597.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7602.jpg": {luogo:"Cagliari"},
-  "IMG_7603.JPG": {luogo:"Cagliari", t:1},
-  "IMG_7604.jpg": {luogo:"Cagliari"},
-  "IMG_7606.JPG": {luogo:"Cagliari", t:1},
-  "IMG_7608.jpg": {luogo:"Cagliari"},
-  "IMG_7609.JPG": {luogo:"Cagliari"},
-  "IMG_7610.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7611.JPG": {luogo:"Cagliari"},
-  "IMG_7613.JPG": {luogo:"Cagliari"},
-  "IMG_7615.jpg": {luogo:"Cagliari"},
-  "IMG_7618.jpg": {luogo:"Cagliari"},
-  "IMG_7620.jpg": {luogo:"Cagliari"},
-  "IMG_7621.jpg": {luogo:"Cagliari"},
-  "IMG_7690.jpg": {luogo:"Cagliari"},
-  "IMG_7762.jpg": {luogo:"Cagliari"},
-  "IMG_7764.jpg": {luogo:"Cagliari"},
-  "IMG_7765.jpg": {luogo:"Cagliari"},
-  "IMG_7766.jpg": {luogo:"Cagliari"},
-  "IMG_7767.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7768.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7769.jpg": {luogo:"Cagliari"},
-  "IMG_7771.jpg": {luogo:"Cagliari"},
-  "IMG_7772.jpg": {luogo:"Cagliari"},
-  "IMG_7773.jpg": {luogo:"Cagliari"},
-  "IMG_7775.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7776.jpg": {luogo:"Cagliari"},
-  "IMG_7777.jpg": {luogo:"Cagliari"},
-  "IMG_7779.jpg": {luogo:"Cagliari"},
-  "IMG_7780.JPG": {luogo:"Cagliari"},
-  "IMG_7782.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7783.jpg": {luogo:"Cagliari"},
-  "IMG_7785.jpg": {luogo:"Cagliari"},
-  "IMG_7788.jpg": {luogo:"Cagliari"},
-  "IMG_7790.jpg": {luogo:"Cagliari"},
-  "IMG_7791.jpg": {luogo:"Cagliari"},
-  "IMG_7792.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7793.jpg": {luogo:"Cagliari"},
-  "IMG_7794.jpg": {luogo:"Cagliari"},
-  "IMG_7795.jpg": {luogo:"Cagliari", t:1},
-  "IMG_7796.jpg": {luogo:"Cagliari"},
-  "IMG_7797.jpg": {luogo:"Cagliari"}
+  "IMG_7299.jpg": {luogo:"Cagliari", rullino:1},
+  "IMG_7301.jpg": {luogo:"Cagliari", rullino:1},
+  "IMG_7302.jpg": {luogo:"Cagliari", rullino:1},
+  "IMG_7305.jpg": {luogo:"Cagliari", rullino:1, t:1},
+  "IMG_7307.jpg": {luogo:"Cagliari", rullino:1, t:1},
+  "IMG_7309.JPG": {luogo:"Cagliari", rullino:1},
+  "IMG_7310.jpg": {luogo:"Cagliari", rullino:1},
+  "IMG_7313.JPG": {luogo:"Cagliari", rullino:1, t:1},
+  "IMG_7316.jpg": {luogo:"Cagliari", rullino:1, t:1},
+  "IMG_7585.jpg": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7588.JPG": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7589.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7592.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7594.JPG": {luogo:"Cagliari", rullino:2},
+  "IMG_7595.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7597.jpg": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7602.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7603.JPG": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7604.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7606.JPG": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7608.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7609.JPG": {luogo:"Cagliari", rullino:2},
+  "IMG_7610.jpg": {luogo:"Cagliari", rullino:2, t:1},
+  "IMG_7611.JPG": {luogo:"Cagliari", rullino:2},
+  "IMG_7613.JPG": {luogo:"Cagliari", rullino:2},
+  "IMG_7615.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7618.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7620.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7621.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7690.jpg": {luogo:"Cagliari", rullino:2},
+  "IMG_7762.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7764.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7765.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7766.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7767.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7768.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7769.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7771.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7772.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7773.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7775.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7776.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7777.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7779.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7780.JPG": {luogo:"Cagliari", rullino:3},
+  "IMG_7782.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7783.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7785.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7788.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7790.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7791.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7792.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7793.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7794.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7795.jpg": {luogo:"Cagliari", rullino:3, t:1},
+  "IMG_7796.jpg": {luogo:"Cagliari", rullino:3},
+  "IMG_7797.jpg": {luogo:"Cagliari", rullino:3}
 };
 
 /* Nome usato per il contatore visite in Firebase (visite_<nome>_AAAA-MM) */
@@ -156,6 +158,7 @@ h2{font-weight:600;margin-bottom:18px}
   <a data-v="foto">Foto</a>
   <a data-v="attrezzatura">Attrezzatura</a>
   <a data-v="luoghi">Luoghi</a>
+  <a data-v="rullino">Rullino</a>
   <a data-v="accedi">Accedi</a>
   <a data-v="contatti">Contatti</a>
 </nav>
@@ -181,6 +184,7 @@ document.getElementById("nomeSito").textContent = NOME_SITO;
 const FOTO = Object.entries(FOTO_LISTA).map(([nome, dati]) => ({
   src: "foto/" + nome,
   luogo: dati.luogo || "",
+  rullino: Number(dati.rullino) || 0,
   home: !!dati.t
 }));
 
@@ -240,6 +244,7 @@ const app = document.getElementById("app");
 const menu = document.getElementById("menu");
 const overlay = document.getElementById("overlay");
 let luogoSel = null;
+let rullinoSel = null;
 let vistaCorrente = "foto";
 
 function toggleMenu(open){
@@ -323,6 +328,19 @@ function vai(v){
         luoghi.map(l => `<button class="${l===luogoSel?'on':''}" data-l="${l}">${l}</button>`).join("") +
         "</div>" + griglia(lista);
       app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { luogoSel = b.dataset.l; vai("luoghi"); });
+      attivaClick(lista);
+    }
+  }
+  else if(v==="rullino"){
+    const rullini = [...new Set(FOTO.map(f => f.rullino).filter(n => n > 0))].sort((a,b) => a - b);
+    if(!rullini.length){ app.innerHTML = '<h2>Rullino</h2><p class="vuoto">Nessun rullino ancora.</p>'; }
+    else{
+      if(rullinoSel === null || !rullini.includes(rullinoSel)) rullinoSel = rullini[rullini.length - 1];
+      const lista = FOTO.filter(f => f.rullino === rullinoSel);
+      app.innerHTML = "<h2>Rullino</h2><div class='luoghi'>" +
+        rullini.map(n => `<button class="${n===rullinoSel?'on':''}" data-n="${n}">Rullino ${n}</button>`).join("") +
+        "</div>" + griglia(lista);
+      app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { rullinoSel = Number(b.dataset.n); vai("rullino"); });
       attivaClick(lista);
     }
   }
