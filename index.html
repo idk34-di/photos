@@ -135,10 +135,10 @@ const FOTO_LISTA = {
   "DSC_0757.JPG": {luogo:"Sassari", rullino:5},
   "DSC_0761.JPG": {luogo:"Sassari", rullino:5},
   "DSC_0763.JPG": {luogo:"Sassari", rullino:5},
-  "DSC_0764.JPG": {luogo:"Sassari", rullino:5, t:1},
+  "DSC_0764.JPG": {luogo:"Sassari", rullino:5},
   "DSC_0771.JPG": {luogo:"Sassari", rullino:5},
   "DSC_0777.JPG": {luogo:"Sassari", rullino:5},
-  "DSC_0783.JPG": {luogo:"Sassari", rullino:5, t:1}
+  "DSC_0783.JPG": {luogo:"Sassari", rullino:5}
 };
 
 /* Nome usato per il contatore visite in Firebase (visite_<nome>_AAAA-MM) */
@@ -399,4 +399,58 @@ function vai(v){
     else{
       if(!luogoSel || !luoghi.includes(luogoSel)) luogoSel = luoghi[0];
       const lista = FOTO.filter(f => f.luogo === luogoSel);
-      app.innerHTML =
+      app.innerHTML = "<h2>Luoghi</h2><div class='luoghi'>" +
+        luoghi.map(l => `<button class="${l===luogoSel?'on':''}" data-l="${l}">${l}</button>`).join("") +
+        "</div>" + griglia(lista);
+      app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { luogoSel = b.dataset.l; vai("luoghi"); });
+      attivaClick(lista);
+    }
+  }
+  else if(v==="rullino"){
+    const rullini = [...new Set(FOTO.map(f => f.rullino).filter(n => n > 0))].sort((a,b) => a - b);
+    if(!rullini.length){ app.innerHTML = '<h2>Rullino</h2><p class="vuoto">Nessun rullino ancora.</p>'; }
+    else{
+      if(rullinoSel === null || !rullini.includes(rullinoSel)) rullinoSel = rullini[rullini.length - 1];
+      const lista = FOTO.filter(f => f.rullino === rullinoSel);
+      app.innerHTML = "<h2>Rullino</h2><div class='luoghi'>" +
+        rullini.map(n => `<button class="${n===rullinoSel?'on':''}" data-n="${n}">Rullino ${n}</button>`).join("") +
+        "</div>" + griglia(lista);
+      app.querySelectorAll(".luoghi button").forEach(b => b.onclick = () => { rullinoSel = Number(b.dataset.n); vai("rullino"); });
+      attivaClick(lista);
+    }
+  }
+  else if(v==="accedi"){
+    if(!utente){
+      app.innerHTML = `<h2>Accedi</h2>
+        <p style="margin-bottom:16px">Accedi con Google per poter scrivermi dalla pagina Contatti.</p>
+        <button class="btn" id="bAccedi">Accedi con Google</button>`;
+      document.getElementById("bAccedi").onclick = accedi;
+    }else{
+      app.innerHTML = `<h2>Ciao ${utente.displayName||""}</h2>
+        <p style="margin-bottom:16px">${utente.email||""}</p>
+        <button class="btn chiaro" id="bEsci">Esci</button>`;
+      document.getElementById("bEsci").onclick = esci;
+    }
+  }
+  else if(v==="contatti"){
+    const mail = CONTATTI_EMAIL ? `<p class="mailpag"><a href="mailto:${CONTATTI_EMAIL}">${CONTATTI_EMAIL}</a></p>` : "";
+    if(!utente){
+      app.innerHTML = `<h2>Contatti</h2>
+        <p style="margin-bottom:16px">Per scrivermi devi prima accedere con Google.</p>
+        <button class="btn" id="bAccedi2">Accedi con Google</button>` + mail;
+      document.getElementById("bAccedi2").onclick = accedi;
+    }else{
+      app.innerHTML = `<h2>Contatti</h2>
+        <div class="msg">
+          <textarea id="testoMsg" maxlength="2000" placeholder="Scrivi qui il tuo messaggio..."></textarea>
+          <button class="invia" id="bInvia" aria-label="Invia">➤</button>
+        </div>` + mail;
+      document.getElementById("bInvia").onclick = inviaMessaggio;
+    }
+  }
+  window.scrollTo(0,0);
+}
+vai("foto");
+</script>
+</body>
+</html>
